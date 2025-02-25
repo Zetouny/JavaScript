@@ -12,10 +12,37 @@ import { modules, students, mentors, classes } from "./hyf.js";
  *  [{ name: 'John', role: 'student' }, { name: 'Mary', role: 'mentor' }]
  */
 const getPeopleOfClass = (className) => {
-  // TODO complete this function
+  let getStudent = students
+    .filter((student) => student.class === className)
+    .reduce((acc, val) => {
+      acc.name = val.name;
+      acc.role = "student";
+      return acc;
+    }, {});
+
+  const getModule = classes.find((cls) => cls.name === className);
+
+  let getMentor = mentors
+    .filter((mentor) => mentor.nowTeaching === getModule.currentModule)
+    .reduce((acc, val) => {
+      acc.name = val.name;
+      acc.role = "mentor";
+      return acc;
+    }, {});
+
+  // Additional code for prettier output
+  if (Object.keys(getStudent).length === 0) {
+    getStudent = "No Students in this class";
+  }
+
+  if (Object.keys(getMentor).length === 0) {
+    getMentor = "No Mentors for this class";
+  }
+
+  return [getStudent, getMentor];
 };
 // You can uncomment out this line to try your function
-// console.log(getPeopleOfClass('class34'));
+// console.log(getPeopleOfClass("class34"));
 
 /**
  * We would like to have a complete overview of the current active classes.
@@ -30,7 +57,14 @@ const getPeopleOfClass = (className) => {
  *  }
  */
 const getActiveClasses = () => {
-  // TODO complete this function
+  const activeClasses = classes.reduce((acc, val) => {
+    if (val.active) {
+      acc[val.name] = getPeopleOfClass(val.name);
+    }
+    return acc;
+  }, {});
+
+  return activeClasses;
 };
 // You can uncomment out this line to try your function
-// console.log(getActiveClasses());
+console.log(getActiveClasses());
